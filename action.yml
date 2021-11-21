@@ -1,5 +1,5 @@
-name: 'Run ORT to analyze evaluate and report licensing'
-description: 'Run ORT to analyze evaluate and report licensing'
+name: 'Run ORT to analyze, evaluate and report licensing'
+description: 'Run ORT to analyze, evaluate and report licensing'
 author: "nVotes"
 branding:
   icon: "activity"
