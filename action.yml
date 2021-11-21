@@ -77,6 +77,7 @@ runs:
   steps:
     - name: Create output results directory
       id: results-dir
+      shell: bash
       run: |
         [ -d ${{ github.workspace }}/ort/ ] || mkdir ${{ github.workspace }}/ort/
         echo "-----------------------------------------------------------------"
@@ -86,6 +87,10 @@ runs:
 
     - name: ORT analyze 
       id: analyze
+      shell: bash
+      env:
+        RUN_ANALYZE: ${{ inputs.analyze }}
+        ANALYZE_EXTRA_ARGS: ${{ inputs.analyze-extra-args }}
       run: |
         [ -z "${RUN_ANALYZE}" ] || \
           { echo "analyze is not true so don't perform this step"; exit 0; }
@@ -116,13 +121,16 @@ runs:
         echo " Finished!"
         echo "-----------------------------------------------------------------"
         echo "::set-output name=analyzer-result::ort/analyzer-result.yml"
-      shell: bash
-      env:
-        RUN_ANALYZE: ${{ inputs.analyze }}
-        ANALYZE_EXTRA_ARGS: ${{ inputs.analyze-extra-args }}
 
     - name: ORT evaluate
       id: evaluate
+      shell: bash
+      env:
+        RUN_EVAULATE: ${{ inputs.evaluate }}
+        PACKAGE_CURATIONS_DIR: ${{ inputs.package-curations-dir }}
+        RULES_FILE: ${{ inputs.rules-file }}
+        LICENSE_CLASSIFICATIONS_FILE: ${{ inputs.license-classifications-file }}
+        EVALUATE_EXTRA_ARGS: ${{ inputs.evaluate-extra-args }}
       run: |
         [ -z "${RUN_EVALUATE}" ] || \
           { echo "evaluate is not true so don't perform this step"; exit 0; }
@@ -179,16 +187,13 @@ runs:
         echo "-----------------------------------------------------------------"
         echo "::set-output name=evaluation-result::ort/evaluation-result.yml"
 
-      shell: bash
-      env:
-        RUN_EVAULATE: ${{ inputs.evaluate }}
-        PACKAGE_CURATIONS_DIR: ${{ inputs.package-curations-dir }}
-        RULES_FILE: ${{ inputs.rules-file }}
-        LICENSE_CLASSIFICATIONS_FILE: ${{ inputs.license-classifications-file }}
-        EVALUATE_EXTRA_ARGS: ${{ inputs.evaluate-extra-args }}
-
     - name: ORT report 
       id: report
+      shell: bash
+      env:
+        RUN_REPORT: ${{ inputs.report }}
+        REPORTERS: ${{ inputs.reporters }}
+        REPORT_EXTRA_ARGS: ${{ inputs.report-extra-args }}
       run: |
         [ -z "${RUN_REPORT}" ] || \
           { echo "report is not true so don't perform this step"; exit 0; }
@@ -227,9 +232,4 @@ runs:
         echo "-----------------------------------------------------------------"
         echo " Finished!"
         echo "-----------------------------------------------------------------"
-      shell: bash
-      env:
-        RUN_REPORT: ${{ inputs.report }}
-        REPORTERS: ${{ inputs.reporters }}
-        REPORT_EXTRA_ARGS: ${{ inputs.report-extra-args }}
 
