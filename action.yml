@@ -79,7 +79,7 @@ runs:
       id: analyze
       run: |
         [ -z "${RUN_ANALYZE}" ] || \
-          { echo "analyze is not `true` so don't perform this step"; exit 0; }
+          { echo "analyze is not true so don't perform this step"; exit 0; }
         echo "-----------------------------------------------------------------"
         echo " ORT analyze step"
         echo "-----------------------------------------------------------------"
@@ -97,6 +97,7 @@ runs:
         echo "-----------------------------------------------------------------"
         docker run \
           -v ${{ github.workspace }}:/project \
+          --user 10001 \
           edulix/ort:${{ inputs.ort-version }} \
           --info analyze \
           -i /project \
@@ -115,7 +116,7 @@ runs:
       id: evaluate
       run: |
         [ -z "${RUN_EVALUATE}" ] || \
-          { echo "evaluate is not `true` so don't perform this step"; exit 0; }
+          { echo "evaluate is not true so don't perform this step"; exit 0; }
         echo "-----------------------------------------------------------------"
         echo " ORT evaluate step"
         echo "-----------------------------------------------------------------"
@@ -155,6 +156,7 @@ runs:
         echo "-----------------------------------------------------------------"
         docker run \
           -v ${{ github.workspace }}:/project \
+          --user 10001 \
           edulix/ort:${{ inputs.ort-version }} \
           --info evaluate \
           -i /project/ort/analyzer-result.yml \
@@ -180,7 +182,7 @@ runs:
       id: report
       run: |
         [ -z "${RUN_REPORT}" ] || \
-          { echo "report is not `true` so don't perform this step"; exit 0; }
+          { echo "report is not true so don't perform this step"; exit 0; }
         echo "-----------------------------------------------------------------"
         echo " ORT report step"
         echo "-----------------------------------------------------------------"
@@ -206,6 +208,7 @@ runs:
         echo "-----------------------------------------------------------------"
         docker run \
           -v ${{ github.workspace }}:/project \
+          --user 10001 \
           edulix/ort:${{ inputs.ort-version }} \
           --info report \
           -i /project/ort/evaluation-result.yml \
