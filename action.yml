@@ -280,22 +280,44 @@ runs:
         [ "${FAIL_ON}" = "errors" ] && { \
         echo " Checking unresolved errors"; \
         echo "-----------------------------------------------------------------"; \
-        grep "Rule Violation Summary (0 errors" ${{ github.workspace }}/ort/scan-report.html >/dev/null && echo "0 unresolved errors" || { echo "FAIL: report has unresolved error(s)" && exit 1; }; \
-        echo "-----------------------------------------------------------------"; \
-        };
+        grep "Rule Violation Summary (0 errors" ${{ github.workspace }}/ort/scan-report.html >/dev/null; \
+        export FAILED_EXEC=$?; \
+        if [ $FAILED_EXEC -eq 0 ]; \
+        then \
+          echo "0 unresolved errors"; \
+        else; \
+          echo "FAIL: report has unresolved errors"; \
+          exit 1; \
+        fi; \
+        } || echo "Do not fail on report unresolved errors"; 
+        echo "-----------------------------------------------------------------";
 
         [ "${FAIL_ON}" = "warnings" ] && { \
         echo " Checking unresolved errors/warnings"; \
         echo "-----------------------------------------------------------------"; \
-        grep "Rule Violation Summary (0 errors, 0 warnings" ${{ github.workspace }}/ort/scan-report.html >/dev/null && echo "0 unresolved errors/warnings" || { echo "FAIL: report has unresolved errors/warnings" && exit 1; }; \
-        echo "-----------------------------------------------------------------"; \
-        };
+        grep "Rule Violation Summary (0 errors, 0 warnings" ${{ github.workspace }}/ort/scan-report.html >/dev/null; \
+        export FAILED_EXEC=$?; \
+        if [ $FAILED_EXEC -eq 0 ]; \
+        then \
+          echo "0 unresolved errors/warnings"; \
+        else; \
+          echo "FAIL: report has unresolved errors/warnings"; \
+          exit 1; \
+        fi; \
+        } || echo "Do not fail on report unresolved errors/warnings"; 
+        echo "-----------------------------------------------------------------";
         
         [ "${FAIL_ON}" = "hints" ] && { \
         echo " Checking unresolved errors/warnings/hints"; \
         echo "-----------------------------------------------------------------"; \
-        grep "Rule Violation Summary (0 errors, 0 warnings, 0 hints to resolve)" ${{ github.workspace }}/ort/scan-report.html >/dev/null && echo "0 unresolved errors/warnings/hints" ||  { echo "FAIL: report has unresolved errors/warnings/hints" && exit 1; }; \
-        echo "-----------------------------------------------------------------"; \
-        } || echo "Do not fail on report unresolved errors/warnings/hints"
-        echo "-----------------------------------------------------------------"
+        export FAILED_EXEC=$?; \
+        if [ $FAILED_EXEC -eq 0 ]; \
+        then \
+          echo "0 unresolved errors/warnings/hints"; \
+        else; \
+          echo "FAIL: report has unresolved errors/warnings/hints"; \
+          exit 1; \
+        fi; \
+        } || echo "Do not fail on report unresolved errors/warnings/hints"; 
+        echo "-----------------------------------------------------------------";
   
