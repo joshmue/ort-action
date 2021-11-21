@@ -48,9 +48,9 @@ Get SPDX license overview
 
 | parameter | description |
 | - | - |
+| results-dir | output directory |
 | analyzer-result | output file for the analyze step |
 | evaluation-result | output file for the evaluate step |
-| report-result-dir | output file for the report step |
 
 <!-- action-docs-outputs -->
 

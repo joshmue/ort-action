@@ -13,9 +13,9 @@ outputs:
   evaluation-result:
     description: "output file for the evaluate step"
     value: ${{ steps.evaluate.outputs.evaluation-result }}
-  report-result-dir:
+  results-dir:
     description: "output directory for the report step"
-    value: ${{ steps.report.outputs.report-result-dir }}
+    value: ${{ steps.results-dir.outputs.results-dir }}
 
 inputs:
   ort-version:
@@ -75,6 +75,15 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Create output results directory
+      id: results-dir
+      run |
+        [ -d ${{ github.workspace }}/ort/ ] || mkdir ${{ github.workspace }}/ort/
+        echo "-----------------------------------------------------------------"
+        echo " Creating output directory ${{ github.workspace }}/ort/"
+        echo "-----------------------------------------------------------------"
+        echo "::set-output name=results-dir::ort/"
+
     - name: ORT analyze 
       id: analyze
       run: |
@@ -218,7 +227,6 @@ runs:
         echo "-----------------------------------------------------------------"
         echo " Finished!"
         echo "-----------------------------------------------------------------"
-        echo "::set-output name=report-result-dir::ort/"
       shell: bash
       env:
         RUN_REPORT: ${{ inputs.report }}
