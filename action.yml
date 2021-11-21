@@ -81,7 +81,9 @@ runs:
       run: |
         [ -d ${{ github.workspace }}/ort/ ] || mkdir ${{ github.workspace }}/ort/
         echo "-----------------------------------------------------------------"
-        echo " Creating output directory ${{ github.workspace }}/ort/"
+        echo " Output directory ${{ github.workspace }}/ort/ contents:"
+        echo "-----------------------------------------------------------------"
+        ls -lah ${{ github.workspace }}/ort/
         echo "-----------------------------------------------------------------"
         echo "::set-output name=results-dir::ort/"
 
@@ -92,20 +94,20 @@ runs:
         RUN_ANALYZE: ${{ inputs.analyze }}
         ANALYZE_EXTRA_ARGS: ${{ inputs.analyze-extra-args }}
       run: |
-        [ -z "${RUN_ANALYZE}" ] || \
-          { echo "analyze is not true so don't perform this step"; exit 0; }
+        [ "${RUN_ANALYZE}" = "true" ] || \
+          { echo "analyze is not true but '${RUN_ANALYZE}' so don't perform this step"; exit 0; }
         echo "-----------------------------------------------------------------"
         echo " ORT analyze step"
         echo "-----------------------------------------------------------------"
         echo " Inputs: "
-        echo "    ANALYZE_EXTRA_ARGS : ${ANALYZE_EXTRA_ARGS} "
+        echo "    ANALYZE_EXTRA_ARGS : '${ANALYZE_EXTRA_ARGS}'' "
         echo "-----------------------------------------------------------------"
         echo " Set X_EXTRA_ARGS from ANALYZE_EXTRA_ARGS"
         echo "-----------------------------------------------------------------"
         [ -z "$ANALYZE_EXTRA_ARGS" ] && \
           X_EXTRA_ARGS="" || \
           X_EXTRA_ARGS="${ANALYZE_EXTRA_ARGS}"
-        echo "          X_EXTRA_ARGS: ${X_EXTRA_ARGS}"
+        echo "          X_EXTRA_ARGS: '${X_EXTRA_ARGS}'"
         echo "-----------------------------------------------------------------"
         echo " Running ORT analyze"
         echo "-----------------------------------------------------------------"
@@ -120,56 +122,60 @@ runs:
         echo "-----------------------------------------------------------------"
         echo " Finished!"
         echo "-----------------------------------------------------------------"
+        echo " Output directory ${{ github.workspace }}/ort/ contents:"
+        echo "-----------------------------------------------------------------"
+        ls -lah ${{ github.workspace }}/ort/
+        echo "-----------------------------------------------------------------"
         echo "::set-output name=analyzer-result::ort/analyzer-result.yml"
 
     - name: ORT evaluate
       id: evaluate
       shell: bash
       env:
-        RUN_EVAULATE: ${{ inputs.evaluate }}
+        RUN_EVALUATE: ${{ inputs.evaluate }}
         PACKAGE_CURATIONS_DIR: ${{ inputs.package-curations-dir }}
         RULES_FILE: ${{ inputs.rules-file }}
         LICENSE_CLASSIFICATIONS_FILE: ${{ inputs.license-classifications-file }}
         EVALUATE_EXTRA_ARGS: ${{ inputs.evaluate-extra-args }}
       run: |
-        [ -z "${RUN_EVALUATE}" ] || \
-          { echo "evaluate is not true so don't perform this step"; exit 0; }
+        [ "${RUN_EVALUATE}" = "true" ] || \
+          { echo "evaluate is not true but '${RUN_EVALUATE}' so don't perform this step"; exit 0; }
         echo "-----------------------------------------------------------------"
         echo " ORT evaluate step"
         echo "-----------------------------------------------------------------"
         echo " Inputs: "
-        echo "    PACKAGE_CURATIONS_DIR        : ${PACKAGE_CURATIONS_DIR} "
-        echo "    RULES_FILE                   : ${RULES_FILE} "
-        echo "    LICENSE_CLASSIFICATIONS_FILE : ${LICENSE_CLASSIFICATIONS_FILE} "
-        echo "    EVALUATE_EXTRA_ARGS          : ${EVALUATE_EXTRA_ARGS} "
+        echo "    PACKAGE_CURATIONS_DIR        : '${PACKAGE_CURATIONS_DIR}' "
+        echo "    RULES_FILE                   : '${RULES_FILE}' "
+        echo "    LICENSE_CLASSIFICATIONS_FILE : '${LICENSE_CLASSIFICATIONS_FILE}' "
+        echo "    EVALUATE_EXTRA_ARGS          : '${EVALUATE_EXTRA_ARGS}' "
         echo "-----------------------------------------------------------------"
         echo " Set X_CURATIONS_DIR from PACKAGE_CURATIONS_DIR"
         echo "-----------------------------------------------------------------"
         [ -z "$PACKAGE_CURATIONS_DIR" ] && \
           X_CURATIONS_DIR="" || \
           X_CURATIONS_DIR="--package-curations-dir '${PACKAGE_CURATIONS_DIR}'"
-        echo "          X_CURATIONS_DIR: ${X_CURATIONS_DIR}"
+        echo "          X_CURATIONS_DIR: '${X_CURATIONS_DIR}'"
         echo "-----------------------------------------------------------------"
         echo " Set X_RULES_FILE from RULES_FILE"
         echo "-----------------------------------------------------------------"
         [ -z "$RULES_FILE" ] && \
           X_RULES_FILE="" || \
           X_RULES_FILE="--rules-file '${RULES_FILE}'"
-        echo "          X_RULES_FILE: ${X_RULES_FILE}"
+        echo "          X_RULES_FILE: '${X_RULES_FILE}'"
         echo "-----------------------------------------------------------------"
         echo " Set X_LICENSE_CLASS from LICENSE_CLASSIFICATIONS_FILE"
         echo "-----------------------------------------------------------------"
         [ -z "$LICENSE_CLASSIFICATIONS_FILE" ] && \
           X_LICENSE_CLASS="" || \
           X_LICENSE_CLASS="--license-classifications-file '${LICENSE_CLASSIFICATIONS_FILE}'"
-        echo "          X_LICENSE_CLASS: ${X_LICENSE_CLASS}"
+        echo "          X_LICENSE_CLASS: '${X_LICENSE_CLASS}'"
         echo "-----------------------------------------------------------------"
         echo " Set X_EXTRA_ARGS"
         echo "-----------------------------------------------------------------"
         [ -z "$EVALUATE_EXTRA_ARGS" ] && \
           X_EXTRA_ARGS="" || \
           X_EXTRA_ARGS="${EVALUATE_EXTRA_ARGS}"
-        echo "          X_EXTRA_ARGS: ${X_EXTRA_ARGS}"
+        echo "          X_EXTRA_ARGS: '${X_EXTRA_ARGS}'"
         echo "-----------------------------------------------------------------"
         docker run \
           -v ${{ github.workspace }}:/project \
@@ -183,7 +189,11 @@ runs:
           ${X_LICENSE_CLASS} \
           ${X_EXTRA_ARGS}
         echo "-----------------------------------------------------------------"
-        echo "Finished!"
+        echo " Finished!"
+        echo "-----------------------------------------------------------------"
+        echo " Output directory ${{ github.workspace }}/ort/ contents:"
+        echo "-----------------------------------------------------------------"
+        ls -lah ${{ github.workspace }}/ort/
         echo "-----------------------------------------------------------------"
         echo "::set-output name=evaluation-result::ort/evaluation-result.yml"
 
@@ -195,28 +205,28 @@ runs:
         REPORTERS: ${{ inputs.reporters }}
         REPORT_EXTRA_ARGS: ${{ inputs.report-extra-args }}
       run: |
-        [ -z "${RUN_REPORT}" ] || \
-          { echo "report is not true so don't perform this step"; exit 0; }
+        [ "${RUN_REPORT}" = "true" ] || \
+          { echo "report is not true but '${RUN_REPORT}' so don't perform this step"; exit 0; }
         echo "-----------------------------------------------------------------"
         echo " ORT report step"
         echo "-----------------------------------------------------------------"
         echo " Inputs: "
-        echo "    REPORTERS         : ${REPORTERS} "
-        echo "    REPORT_EXTRA_ARGS : ${REPORT_EXTRA_ARGS} "
+        echo "    REPORTERS         : '${REPORTERS}' "
+        echo "    REPORT_EXTRA_ARGS : '${REPORT_EXTRA_ARGS}' "
         echo "-----------------------------------------------------------------"
         echo " Set X_REPORTERS from REPORTERS"
         echo "-----------------------------------------------------------------"
         [ -z "$REPORTERS" ] && \
           X_REPORTERS="" || \
           X_REPORTERS="${REPORTERS}"
-        echo "          X_REPORTERS: ${X_REPORTERS}"
+        echo "          X_REPORTERS: '${X_REPORTERS}'"
         echo "-----------------------------------------------------------------"
         echo " Set X_EXTRA_ARGS from REPORT_EXTRA_ARGS"
         echo "-----------------------------------------------------------------"
         [ -z "$REPORT_EXTRA_ARGS" ] && \
           X_EXTRA_ARGS="" || \
           X_EXTRA_ARGS="${REPORT_EXTRA_ARGS}"
-        echo "          X_EXTRA_ARGS: ${X_EXTRA_ARGS}"
+        echo "          X_EXTRA_ARGS: '${X_EXTRA_ARGS}'"
         echo "-----------------------------------------------------------------"
         echo " Running ORT report"
         echo "-----------------------------------------------------------------"
@@ -231,5 +241,9 @@ runs:
           ${X_EXTRA_ARGS}
         echo "-----------------------------------------------------------------"
         echo " Finished!"
+        echo "-----------------------------------------------------------------"
+        echo " Output directory ${{ github.workspace }}/ort/ contents:"
+        echo "-----------------------------------------------------------------"
+        ls -lah ${{ github.workspace }}/ort/
         echo "-----------------------------------------------------------------"
 
