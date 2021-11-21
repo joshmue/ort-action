@@ -101,7 +101,7 @@ runs:
         echo " ORT analyze step"
         echo "-----------------------------------------------------------------"
         echo " Inputs: "
-        echo "    ANALYZE_EXTRA_ARGS : '${ANALYZE_EXTRA_ARGS}'' "
+        echo "    ANALYZE_EXTRA_ARGS : '${ANALYZE_EXTRA_ARGS}' "
         echo "-----------------------------------------------------------------"
         echo " Set X_EXTRA_ARGS from ANALYZE_EXTRA_ARGS"
         echo "-----------------------------------------------------------------"
@@ -154,21 +154,21 @@ runs:
         echo "-----------------------------------------------------------------"
         [ -z "$PACKAGE_CURATIONS_DIR" ] && \
           X_CURATIONS_DIR="" || \
-          X_CURATIONS_DIR="--package-curations-dir '${{ github.workspace }}/${PACKAGE_CURATIONS_DIR}'"
+          X_CURATIONS_DIR="--package-curations-dir ${{ github.workspace }}/${PACKAGE_CURATIONS_DIR}"
         echo "          X_CURATIONS_DIR: '${X_CURATIONS_DIR}'"
         echo "-----------------------------------------------------------------"
         echo " Set X_RULES_FILE from RULES_FILE"
         echo "-----------------------------------------------------------------"
         [ -z "$RULES_FILE" ] && \
           X_RULES_FILE="" || \
-          X_RULES_FILE="--rules-file '${{ github.workspace }}/${RULES_FILE}'"
+          X_RULES_FILE="--rules-file ${{ github.workspace }}/${RULES_FILE}"
         echo "          X_RULES_FILE: '${X_RULES_FILE}'"
         echo "-----------------------------------------------------------------"
         echo " Set X_LICENSE_CLASS from LICENSE_CLASSIFICATIONS_FILE"
         echo "-----------------------------------------------------------------"
         [ -z "$LICENSE_CLASSIFICATIONS_FILE" ] && \
           X_LICENSE_CLASS="" || \
-          X_LICENSE_CLASS="--license-classifications-file '${{ github.workspace }}/${LICENSE_CLASSIFICATIONS_FILE}'"
+          X_LICENSE_CLASS="--license-classifications-file ${{ github.workspace }}/${LICENSE_CLASSIFICATIONS_FILE}"
         echo "          X_LICENSE_CLASS: '${X_LICENSE_CLASS}'"
         echo "-----------------------------------------------------------------"
         echo " Set X_EXTRA_ARGS"
