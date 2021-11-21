@@ -160,8 +160,11 @@ runs:
         echo " ls -lah ${{ github.workspace }} :"
         ls -lah ${{ github.workspace }}
         echo "-----------------------------------------------------------------"
-        echo " ls -lah X_CURATIONS_DIR=${X_CURATIONS_DIR} :"
-        ls -lah ${X_CURATIONS_DIR}
+        echo " ls -lah ${{ github.workspace }}/${PACKAGE_CURATIONS_DIR}:"
+        ls -lah ${{ github.workspace }}/${PACKAGE_CURATIONS_DIR}
+        echo "-----------------------------------------------------------------"
+        echo " ls -lah ${{ github.workspace }}/.ort-data/:"
+        ls -lah ${{ github.workspace }}/.ort-data/
         echo "-----------------------------------------------------------------"
         echo " Set X_RULES_FILE from RULES_FILE"
         echo "-----------------------------------------------------------------"
