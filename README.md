@@ -40,6 +40,7 @@ Get SPDX license overview
 | analyze-extra-args | List of extra arguments for the `analyze` action. | `false` | |
 | evaluate-extra-args | List of extra arguments for the `evaluate` action. | `false` | |
 | report-extra-args | List of extra arguments for the `report` action. | `false` | |
+| fail-on | List of extra arguments for the `report` action. | `false` | |
 
 <!-- action-docs-inputs -->
 

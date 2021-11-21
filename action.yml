@@ -71,6 +71,15 @@ inputs:
   report-extra-args:
     description: List of extra arguments for the `report` action.
     required: false
+  fail-on:
+    description: >
+      Fail the execution of the pipeline on unresolved errors, warnings or
+      hints. Uses the StaticHtml reporter to find if there's any unresolved
+      issue. Defaults to 'dont-fail'. Possible values: 'errors', 'warnings',
+      'hints', 'dont-fail'. Note: requires the StaticHtml reporter and the report step to be
+      executed.
+    required: false
+    default: 'dont-fail'
 
 runs:
   using: "composite"
@@ -248,6 +257,44 @@ runs:
         echo " Finished!"
         echo "-----------------------------------------------------------------"
         echo " Output directory ${{ github.workspace }}/ort/ contents:"
+        echo "-----------------------------------------------------------------"
+        ls -lah ${{ github.workspace }}/ort/
+        echo "-----------------------------------------------------------------"
+
+    - name: Fail checks
+      id: fail-checks
+      shell: bash
+      env:
+        FAIL_ON: ${{ inputs.fail-on }}
+      run: |
+        [ "${FAIL_ON}" = "dont-fail" ] && \
+          { echo "do not need to fail on unresolved issues so don't perform this step"; exit 0; }
+        echo "-----------------------------------------------------------------"
+        echo " ORT fail checks step"
+        echo "-----------------------------------------------------------------"
+        echo " Inputs: "
+        echo "    FAIL_ON : '${FAIL_ON}' "
+        echo "-----------------------------------------------------------------"
+        [ "${FAIL_ON}" = "errors" ] && {\
+        echo " Checking unresolved errors";\
+        echo "-----------------------------------------------------------------";\
+        grep "Rule Violation Summary (0 errors" ${{ github.workspace }} >/dev/null && echo "0 unresolved errors" || echo "FAIL: report has unresolved error(s)" && exit 1;\
+        echo "-----------------------------------------------------------------"\
+        } || echo "Do not fail on report unresolved errors"
+        echo "-----------------------------------------------------------------"
+        [ "${FAIL_ON}" = "warnings" ] && {\
+        echo " Checking unresolved errors/warnings";\
+        echo "-----------------------------------------------------------------";\
+        grep "Rule Violation Summary (0 errors, 0 warnings" ${{ github.workspace }} >/dev/null && echo "0 unresolved errors/warnings" || echo "FAIL: report has unresolved errors/warnings" && exit 1;\
+        echo "-----------------------------------------------------------------"\
+        } || echo "Do not fail on report unresolved errors/warnings"
+        echo "-----------------------------------------------------------------"
+        [ "${FAIL_ON}" = "hints" ] && {\
+        echo " Checking unresolved errors/warnings/hints";\
+        echo "-----------------------------------------------------------------";\
+        grep "Rule Violation Summary (0 errors, 0 warnings, 0 hints to resolve)" ${{ github.workspace }}/ >/dev/null && echo "0 unresolved errors/warnings/hints" || echo "FAIL: report has unresolved errors/warnings/hints" && exit 1;\
+        echo "-----------------------------------------------------------------"\
+        } || echo "Do not fail on report unresolved errors/warnings/hints"
         echo "-----------------------------------------------------------------"
         ls -lah ${{ github.workspace }}/ort/
         echo "-----------------------------------------------------------------"
