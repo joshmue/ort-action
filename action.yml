@@ -268,7 +268,7 @@ runs:
         FAIL_ON: ${{ inputs.fail-on }}
       run: |
         [ "${FAIL_ON}" = "dont-fail" ] && \
-          { echo "do not need to fail on unresolved issues so don't perform this step"; exit 0; }
+          { echo "do not need to fail on unresolved issues so don't perform this step"; exit 0; };
         
         echo "-----------------------------------------------------------------"
         echo " ORT fail checks step"
@@ -282,14 +282,14 @@ runs:
         echo "-----------------------------------------------------------------"; \
         grep "Rule Violation Summary (0 errors" ${{ github.workspace }}/ort/scan-report.html >/dev/null && echo "0 unresolved errors" || echo "FAIL: report has unresolved error(s)" && exit 1; \
         echo "-----------------------------------------------------------------"; \
-        }
+        };
 
         [ "${FAIL_ON}" = "warnings" ] && { \
         echo " Checking unresolved errors/warnings"; \
         echo "-----------------------------------------------------------------"; \
         grep "Rule Violation Summary (0 errors, 0 warnings" ${{ github.workspace }}/ort/scan-report.html >/dev/null && echo "0 unresolved errors/warnings" || echo "FAIL: report has unresolved errors/warnings" && exit 1; \
         echo "-----------------------------------------------------------------"; \
-        }
+        };
         
         [ "${FAIL_ON}" = "hints" ] && { \
         echo " Checking unresolved errors/warnings/hints"; \
