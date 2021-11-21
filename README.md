@@ -36,7 +36,7 @@ Get SPDX license overview
 | package-curations-dir | Specifies path relative to the project directory for the curations directory. Used in `analyze` and `evaluate` actions. It's the `--package-curations-dir` option for ORT. | `false` | |
 | rules-file | Specifies path relative to the project directory for the rules of the `evaluate` action. It's the `--rules-file` option for ORT. | `false` | |
 | license-classifications-file | Specifies path relative to the project directory for the license classifications file of the `evaluate` action. It's the `--license-classifications-file` option for ORT. | `false` | |
-| license-classifications-file | List of reporters to run. | `false` | `Excel,StaticHtml,WebApp` |
+| reporters | List of reporters to run. | `false` | `Excel,StaticHtml,WebApp` |
 | analyze-extra-args | List of extra arguments for the `analyze` action. | `false` | |
 | evaluate-extra-args | List of extra arguments for the `evaluate` action. | `false` | |
 | report-extra-args | List of extra arguments for the `report` action. | `false` | |
