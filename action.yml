@@ -80,7 +80,7 @@ runs:
       shell: bash
       run: |
         [ -d ${{ github.workspace }}/ort/ ] || mkdir ${{ github.workspace }}/ort/
-        chown 10001 ${{ github.workspace }}/ort/
+        chmod +w ${{ github.workspace }}/ort/
         echo "-----------------------------------------------------------------"
         echo " Output directory ${{ github.workspace }}/ort/ contents:"
         echo "-----------------------------------------------------------------"
