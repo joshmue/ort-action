@@ -1,6 +1,7 @@
-name: 'Run ORT to analyze, evaluate and report licensing'
-description: 'Run ORT to analyze, evaluate and report licensing'
-author: "nVotes"
+name: 'Run ORT'
+description: >
+  Run oss-review-toolkit to review Open Source software dependencies.
+author: "edulix"
 branding:
   icon: "activity"
   color: "green"
@@ -170,7 +171,7 @@ runs:
       shell: bash
       env:
         RUN_EVAULATE: ${{ inputs.evaluate }}
-        PACKAGE_CURATIONS_DIR: ${{ input.package-curations-dir }}
+        PACKAGE_CURATIONS_DIR: ${{ inputs.package-curations-dir }}
         RULES_FILE: ${{ inputs.rules-file }}
         LICENSE_CLASSIFICATIONS_FILE: ${{ inputs.license-classifications-file }}
         EVALUATE_EXTRA_ARGS: ${{ inputs.evaluate-extra-args }}
