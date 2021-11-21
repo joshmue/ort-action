@@ -2,7 +2,7 @@
 
 # Execute ORT with a Github Action
 
-[![Marketplace](https://img.shields.io/badge/GitHub-Marketplace-green.svg)](https://github.com/marketplace/actions/get-spdx-license-overview) [![Release](https://img.shields.io/github/release/edulix/ort-action.svg)](https://github.com/edulix/ort-action/releases)
+[![Marketplace](https://img.shields.io/badge/GitHub-Marketplace-green.svg)](https://github.com/marketplace/actions/run-ort-to-analyze-evaluate-and-report-licensing) [![Release](https://img.shields.io/github/release/edulix/ort-action.svg)](https://github.com/edulix/ort-action/releases)
 
 This action allows you to run [ORT](https://oss-review-toolkit.org/). The OSS
 Review Toolkit (ORT) aims to assist with the tasks that commonly need to be
@@ -12,10 +12,6 @@ limited to) Free and Open Source Software dependencies.
 > THIS IS AN EXPERIMENTAL ACTION
 
 </div>
-
-## Configuration
-You can specify the configuration in a `.spdx-builder.yml` in the root of your project.
-See [instructions in philips-software/spdx-builder](https://github.com/philips-software/spdx-builder#including-projects-in-the-spdx-file).
 
 ## Environment
 This action requires a java environment. (See example)
