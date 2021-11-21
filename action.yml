@@ -75,7 +75,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Create output results directory and fix permissions
+    - name: Create output results directory and ORT_DATA_DIR=/project/.ort/
       id: results-dir
       shell: bash
       run: |
@@ -115,6 +115,7 @@ runs:
         echo " Running ORT analyze"
         echo "-----------------------------------------------------------------"
         docker run \
+          -e ORT_DATA_DIR=/project/.ort/ \
           -v ${{ github.workspace }}:/project \
           --user 10001 \
           edulix/ort:${{ inputs.ort-version }} \
@@ -180,6 +181,7 @@ runs:
         echo "          X_EXTRA_ARGS: '${X_EXTRA_ARGS}'"
         echo "-----------------------------------------------------------------"
         docker run \
+          -e ORT_DATA_DIR=/project/.ort/ \
           -v ${{ github.workspace }}:/project \
           --user 10001 \
           edulix/ort:${{ inputs.ort-version }} \
@@ -233,6 +235,7 @@ runs:
         echo " Running ORT report"
         echo "-----------------------------------------------------------------"
         docker run \
+          -e ORT_DATA_DIR=/project/.ort/ \
           -v ${{ github.workspace }}:/project \
           --user 10001 \
           edulix/ort:${{ inputs.ort-version }} \
