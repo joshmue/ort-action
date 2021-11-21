@@ -75,12 +75,13 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Create output results directory
+    - name: Create output results directory and fix permissions
       id: results-dir
       shell: bash
       run: |
         [ -d ${{ github.workspace }}/ort/ ] || mkdir ${{ github.workspace }}/ort/
         chmod aug+w ${{ github.workspace }}/ort/
+        chmod -R aug+w ${{ github.workspace }}/.ort/
         echo "-----------------------------------------------------------------"
         echo " Output directory ${{ github.workspace }}/ort/ contents:"
         echo "-----------------------------------------------------------------"
