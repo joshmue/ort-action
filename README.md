@@ -1,10 +1,14 @@
 <div align="center">
 
-# Get SPDX license overview
+# Execute ORT with a Github Action
 
-[![Marketplace](https://img.shields.io/badge/GitHub-Marketplace-green.svg)](https://github.com/marketplace/actions/get-spdx-license-overview) [![Release](https://img.shields.io/github/release/philips-software/spdx-action.svg)](https://github.com/philips-software/spdx-action/releases)
+[![Marketplace](https://img.shields.io/badge/GitHub-Marketplace-green.svg)](https://github.com/marketplace/actions/get-spdx-license-overview) [![Release](https://img.shields.io/github/release/edulix/ort-action.svg)](https://github.com/edulix/ort-action/releases)
 
-This action will create a SPDX license overview with ORT and SPDX-builder.
+This action allows you to run [ORT](https://oss-review-toolkit.org/). The OSS
+Review Toolkit (ORT) aims to assist with the tasks that commonly need to be
+performed in the context of license compliance checks, especially for (but not
+limited to) Free and Open Source Software dependencies.
+
 > THIS IS AN EXPERIMENTAL ACTION
 
 </div>
@@ -29,23 +33,17 @@ Get SPDX license overview
 
 | parameter | description | required | default |
 | - | - | - | - |
-| project | project | `true` | spdx-builder |
-| spdx-builder-version | spdx-builder-version | `true` | v0.8.1 |
-| mode | Scan mode. Can be 'ort', 'blackduck' or 'tree' | `true` | ort |
-| scanner-url | scanner-url (license-scanner) | `false` |  |
-| bombase-url | bombase-url (in case of mode: 'tree') | `false` |  |
-| upload-url | upload-url (f.e. BOM-bar) | `false` |  |
-| ort-version | philipssoftware/ort version (in case of mode: 'ort') | `false` | 2021-05-31 |
-| ort-file | Specifies an ort-file to override ORT scanning in this action. (in case of mode: 'ort') | `false` |  |
-| tree | file with tree input (in case of mode: 'tree') | `false` |  |
-| format | format input (in case of mode: 'tree') | `false` |  |
-| blackduck-url | Blackduck url (in case of mode: 'blackduck') | `false` |  |
-| blackduck-token | Blackduck token (in case of mode: 'blackduck') | `false` |  |
-| blackduck-project | Blackduck project (in case of mode: 'blackduck') | `false` |  |
-| blackduck-version | Blackduck version (in case of mode: 'blackduck') | `false` |  |
-| optional-arguments | Optional arguments like `--tree`, `--release`, `--force` and `--custom` | `false` |  |
-
-
+| ort-version | edulix/ort docker hub tag to use. | `false` | `latest` |
+| analyze | Set to `false` to disable the execution of the ORT `analyze` ORT Action. | `false` | `true` |
+| evaluate | Set to `false` to disable the execution of the ORT `evaluate` ORT Action. | `false` | `true` |
+| report | Set to `false` to disable the execution of the ORT `report` ORT Action. | `false` | `true` |
+| package-curations-dir | Specifies path relative to the project directory for the curations directory. Used in `analyze` and `evaluate` actions. It's the `--package-curations-dir` option for ORT. | `false` | |
+| rules-file | Specifies path relative to the project directory for the rules of the `evaluate` action. It's the `--rules-file` option for ORT. | `false` | |
+| license-classifications-file | Specifies path relative to the project directory for the license classifications file of the `evaluate` action. It's the `--license-classifications-file` option for ORT. | `false` | |
+| license-classifications-file | List of reporters to run. | `false` | `Excel,StaticHtml,WebApp` |
+| analyze-extra-args | List of extra arguments for the `analyze` action. | `false` | |
+| evaluate-extra-args | List of extra arguments for the `evaluate` action. | `false` | |
+| report-extra-args | List of extra arguments for the `report` action. | `false` | |
 
 <!-- action-docs-inputs -->
 
@@ -54,10 +52,9 @@ Get SPDX license overview
 
 | parameter | description |
 | - | - |
-| spdx-file | spdx-license file |
-| ort-file | ort-license file |
-
-
+| analyzer-result | output file for the analyze step |
+| evaluation-result | output file for the evaluate step |
+| report-result-dir | output file for the report step |
 
 <!-- action-docs-outputs -->
 
@@ -71,82 +68,18 @@ This action is an `composite` action.
 
 ## GitHub workflow
 
-Make sure you have a proper `.spdx-builder.yml` file in your project.
-
-### `ORT` mode
 ```yml
   - uses: actions/checkout@v2
   - uses: actions/setup-java@v1
     with:
       java-version: '11.0.1'
-  - name: Create spdx-file
-    id: spdx-builder
-    uses: philips-software/spdx-action@v0.8.1
-    with:
-      project: my-project
-      mode: ort
+
+  - name: Analyze licensing 
+    id: ort-action
+    uses: edulix/ort-action
+
   - uses: actions/upload-artifact@v2
     with:
       name: licenses
-      path: ${{ steps.spdx-builder.outputs.spdx-file }}
-```
-
-### `tree` mode
-```yml
-  - uses: actions/checkout@v2
-  - uses: actions/setup-java@v1
-    with:
-      java-version: '11.0.1'
-  - name: Create tree
-    run: |
-      npm list --all --production > npm-dependencies.txt
-  - name: Create spdx-file
-    id: spdx-builder
-    uses: philips-software/spdx-action@v0.8.1
-     with:
-      project: my-project
-      mode: 'tree'
-      tree: 'npm-dependencies.txt'
-      format: 'npm'
-      bombase-url: <bombase-url> # Optional
-  - uses: actions/upload-artifact@v2
-    with:
-      name: licenses
-      path: ${{ steps.spdx-builder.outputs.spdx-file }}
-```
-
-### `blackduck` mode
-```yml
-  - uses: actions/checkout@v2
-  - uses: actions/setup-java@v1
-    with:
-      java-version: '11.0.1'
-  - name: Create spdx-file
-    id: spdx-builder
-    uses: philips-software/spdx-action@v0.8.1
-    with:
-      project: my-project
-      mode: 'blackduck'
-      blackduck-url: <blackduck-url>
-      blackduck-token: ${{ secrets.BLACKDUCK_TOKEN }}
-      blackduck-project: <project-name>
-      blackduck-version: <project-version>
-  - uses: actions/upload-artifact@v2
-    with:
-      name: licenses
-      path: ${{ steps.spdx-builder.outputs.spdx-file }}
-```
-
-## Philips Forest
-
-This module is part of the Philips Forest.
-
-```
-                                                     ___                   _
-                                                    / __\__  _ __ ___  ___| |_
-                                                   / _\/ _ \| '__/ _ \/ __| __|
-                                                  / / | (_) | | |  __/\__ \ |_
-                                                  \/   \___/|_|  \___||___/\__|
-
-                                                                            CI
+      path: ${{ steps.ort-action.outputs.report-result-dir }}
 ```
