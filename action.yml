@@ -270,6 +270,7 @@ runs:
         [ "${FAIL_ON}" = "dont-fail" ] && \
           { echo "do not need to fail on unresolved issues so don't perform this step"; exit 0; };
         
+        
         echo "-----------------------------------------------------------------"
         echo " ORT fail checks step"
         echo "-----------------------------------------------------------------"
@@ -277,9 +278,40 @@ runs:
         echo "    FAIL_ON : '${FAIL_ON}' "
         echo "-----------------------------------------------------------------"
         
+        [ "${FAIL_ON}" = "errors" ] && { \
+        echo " Checking unresolved errors"; \
+        echo "-----------------------------------------------------------------"; \
+        grep "Rule Violation Summary (0 errors" $A/ort/scan-report.html >/dev/null; \
+        export FAILED_EXEC=$?; \
+        if [ $FAILED_EXEC -eq 0 ]; \
+        then \
+          echo "0 unresolved errors"; \
+        else; \
+          echo "FAIL: report has unresolved errors"; \
+          exit 1; \
+        fi; \
+        } || echo "Do not fail on report unresolved errors"; 
+        echo "-----------------------------------------------------------------";
+
+        [ "${FAIL_ON}" = "warnings" ] && { \
+        echo " Checking unresolved errors/warnings"; \
+        echo "-----------------------------------------------------------------"; \
+        grep "Rule Violation Summary (0 errors, 0 warnings" $A/ort/scan-report.html >/dev/null; \
+        export FAILED_EXEC=$?; \
+        if [ $FAILED_EXEC -eq 0 ]; \
+        then \
+          echo "0 unresolved errors/warnings"; \
+        else; \
+          echo "FAIL: report has unresolved errors/warnings"; \
+          exit 1; \
+        fi; \
+        } || echo "Do not fail on report unresolved errors/warnings"; 
+        echo "-----------------------------------------------------------------";
+        
         [ "${FAIL_ON}" = "hints" ] && { \
         echo " Checking unresolved errors/warnings/hints"; \
         echo "-----------------------------------------------------------------"; \
+        grep "Rule Violation Summary (0 errors, 0 warnings, 0 hints to resolve)" $A/ort/scan-report.html >/dev/null; \
         export FAILED_EXEC=$?; \
         if [ $FAILED_EXEC -eq 0 ]; \
         then \
