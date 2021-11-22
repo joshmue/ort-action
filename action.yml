@@ -89,9 +89,8 @@ runs:
       shell: bash
       run: |
         [ -d ${{ github.workspace }}/ort/ ] || mkdir ${{ github.workspace }}/ort/
-        chmod aug+w ${{ github.workspace }}/ort/
         [ -d ${{ github.workspace }}/.ort/ ] || mkdir ${{ github.workspace }}/.ort/
-        chmod -R aug+w ${{ github.workspace }}/.ort/
+        chmod -R aug+w ${{ github.workspace }}/
         echo "-----------------------------------------------------------------"
         echo " Output directory ${{ github.workspace }}/ort/ contents:"
         echo "-----------------------------------------------------------------"
