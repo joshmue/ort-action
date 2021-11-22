@@ -19,8 +19,9 @@ This action requires a java environment. (See example)
 <!-- action-docs-description -->
 ## Description
 
-Get SPDX license overview
-
+With this action you can use [ORT](https://oss-review-toolkit.org/) to analyze
+the licenses of your dependencies, fail if there's any licensing issues and/or
+generate dependencies licensing reports in different formats.
 
 <!-- action-docs-description -->
 
