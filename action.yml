@@ -243,6 +243,16 @@ runs:
         echo "-----------------------------------------------------------------"
         echo " Running ORT report"
         echo "-----------------------------------------------------------------"
+        echo "command: 'docker run \"
+        echo "  -e ORT_DATA_DIR=/project/.ort/ \"
+        echo "  -v ${{ github.workspace }}:/project \"
+        echo "  --user 10001 \"
+        echo "  edulix/ort:${{ inputs.ort-version }} \"
+        echo "  --info report \"
+        echo "  -i /project/ort/evaluation-result.yml \"
+        echo "  -o /project/ort \"
+        echo "  -f ${X_REPORTERS} \"
+        echo "  ${X_EXTRA_ARGS}'"
         docker run \
           -e ORT_DATA_DIR=/project/.ort/ \
           -v ${{ github.workspace }}:/project \
