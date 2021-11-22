@@ -41,7 +41,7 @@ generate dependencies licensing reports in different formats.
 | analyze-extra-args | List of extra arguments for the `analyze` action. | `false` | |
 | evaluate-extra-args | List of extra arguments for the `evaluate` action. | `false` | |
 | report-extra-args | List of extra arguments for the `report` action. | `false` | |
-| fail-on | Fail the execution of the pipeline on unresolved errors, warnings or hints. Uses the StaticHtml reporter to find if there's any unresolved issue. Defaults to 'dont-fail'. Possible values: 'errors', 'warnings', 'hints', 'dont-fail'. Note: requires the StaticHtml reporter and the report step to be executed. | `dont-fail` | |
+| fail-on | Fail the execution of the pipeline on unresolved errors, warnings or hints. Uses the StaticHtml reporter to find if there's any unresolved issue. Defaults to 'dont-fail'. Possible values: 'errors', 'warnings', 'hints', 'dont-fail'. Note: requires the StaticHtml reporter and the report step to be executed. | `false` | `dont-fail` |
 
 <!-- action-docs-inputs -->
 
