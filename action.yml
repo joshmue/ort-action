@@ -84,12 +84,13 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Create output results directory and ORT_DATA_DIR=/project/.ort/
+    - name: Create some needed directories
       id: results-dir
       shell: bash
       run: |
         [ -d ${{ github.workspace }}/ort/ ] || mkdir ${{ github.workspace }}/ort/
         [ -d ${{ github.workspace }}/.ort/ ] || mkdir ${{ github.workspace }}/.ort/
+        [ -d ${{ github.workspace }}/.config/ ] || mkdir ${{ github.workspace }}/.config/
         chmod -R aug+w ${{ github.workspace }}/
         echo "-----------------------------------------------------------------"
         echo " Output directory ${{ github.workspace }}/ort/ contents:"
@@ -124,7 +125,7 @@ runs:
         echo "-----------------------------------------------------------------"
         docker run \
           -e ORT_DATA_DIR=/project/.ort/ \
-          -v /.config \
+          -v ${{ github.workspace }}/.config:/.config \
           -v ${{ github.workspace }}:/project \
           --user 10001 \
           edulix/ort:${{ inputs.ort-version }} \
