@@ -92,6 +92,7 @@ runs:
         [ -d ${{ github.workspace }}/.ort/ ] || mkdir ${{ github.workspace }}/.ort/
         [ -d ${{ github.workspace }}/.config/ ] || mkdir ${{ github.workspace }}/.config/
         [ -d ${{ github.workspace }}/.cache/ ] || mkdir ${{ github.workspace }}/.cache/
+        [ -d ${{ github.workspace }}/.local/ ] || mkdir ${{ github.workspace }}/.local/
         chmod -R aug+w ${{ github.workspace }}/
         echo "-----------------------------------------------------------------"
         echo " Output directory ${{ github.workspace }}/ort/ contents:"
@@ -128,6 +129,7 @@ runs:
           -e ORT_DATA_DIR=/project/.ort/ \
           -v ${{ github.workspace }}/.config:/.config \
           -v ${{ github.workspace }}/.cache:/.cache \
+          -v ${{ github.workspace }}/.local:/.local \
           -v ${{ github.workspace }}:/project \
           --user 10001 \
           edulix/ort:${{ inputs.ort-version }} \
