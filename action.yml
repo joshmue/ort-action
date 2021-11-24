@@ -102,7 +102,6 @@ runs:
       id: analyze
       shell: bash
       env:
-        HOME: '.'
         RUN_ANALYZE: ${{ inputs.analyze }}
         ANALYZE_EXTRA_ARGS: ${{ inputs.analyze-extra-args }}
       run: |
@@ -125,6 +124,7 @@ runs:
         echo "-----------------------------------------------------------------"
         docker run \
           -e ORT_DATA_DIR=/project/.ort/ \
+          -v /.config \
           -v ${{ github.workspace }}:/project \
           --user 10001 \
           edulix/ort:${{ inputs.ort-version }} \
@@ -145,7 +145,6 @@ runs:
       id: evaluate
       shell: bash
       env:
-        HOME: '.'
         RUN_EVALUATE: ${{ inputs.evaluate }}
         PACKAGE_CURATIONS_DIR: ${{ inputs.package-curations-dir }}
         RULES_FILE: ${{ inputs.rules-file }}
@@ -215,7 +214,6 @@ runs:
       id: report
       shell: bash
       env:
-        HOME: '.'
         RUN_REPORT: ${{ inputs.report }}
         REPORTERS: ${{ inputs.reporters }}
         REPORT_EXTRA_ARGS: ${{ inputs.report-extra-args }}
