@@ -101,8 +101,7 @@ And a more complex example:
       report-extra-args: >
         --report-option
         ADocTemplate=template.path=/project/.ort-data/disclosure_document.ftl
-      evaluate-extra-args: >
-        -P ort.severeRuleViolationThreshold=HINT
+      evaluate-extra-args: -P ort.severeRuleViolationThreshold=HINT
 
   - uses: actions/upload-artifact@v2
     with:
