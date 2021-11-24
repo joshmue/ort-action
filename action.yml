@@ -158,7 +158,7 @@ runs:
           analyze \
           -i /project \
           -o /project/ort \
-          ${X_EXTRA_ARGS}
+          ${{ inputs.analyze-extra-args }}
         echo "-----------------------------------------------------------------"
         echo " Finished!"
         echo "-----------------------------------------------------------------"
