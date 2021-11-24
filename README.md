@@ -39,6 +39,7 @@ generate dependencies licensing reports in different formats.
 | rules-file | Specifies path relative to the project directory for the rules of the `evaluate` action. It's the `--rules-file` option for ORT. | `false` | - |
 | license-classifications-file | Specifies path relative to the project directory for the license classifications file of the `evaluate` action. It's the `--license-classifications-file` option for ORT. | `false` | - |
 | reporters | List of reporters to run. | `false` | `Excel,StaticHtml,WebApp` |
+| ort-extra-args | List of extra arguments for ORT, for all commands, set before the verb (before analyze, evaluate or report). | `false` | `""` |
 | analyze-extra-args | List of extra arguments for the `analyze` action. | `false` | - |
 | evaluate-extra-args | List of extra arguments for the `evaluate` action. | `false` | - |
 | report-extra-args | List of extra arguments for the `report` action. | `false` | - |
@@ -101,7 +102,7 @@ And a more complex example:
       report-extra-args: >
         --report-option
         ADocTemplate=template.path=/project/.ort-data/disclosure_document.ftl
-      evaluate-extra-args: -P ort.severeRuleViolationThreshold=HINT
+      ort-extra-args: -P ort.severeRuleViolationThreshold=HINT
 
   - uses: actions/upload-artifact@v2
     with:

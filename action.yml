@@ -68,6 +68,12 @@ inputs:
       List of reporters to run. Default: Excel,StaticHtml,WebApp
     required: false
     default: Excel,StaticHtml,WebApp
+  ort-extra-args:
+    description: >-
+      List of extra arguments for ORT, for all commands, set before
+      the verb (before analyze, evaluate or report).
+    required: false
+    default: ""
   analyze-extra-args:
     description: List of extra arguments for the `analyze` action.
     required: false
@@ -125,6 +131,7 @@ runs:
       id: analyze
       shell: bash
       env:
+        ORT_EXTRA_ARGS: ${{ inputs.ort-extra-args }}
         VERBOSITY: ${{ steps.init.outputs.verbosity }}
         RUN_ANALYZE: ${{ inputs.analyze }}
         ANALYZE_EXTRA_ARGS: ${{ inputs.analyze-extra-args }}
@@ -135,6 +142,7 @@ runs:
         echo " ORT analyze step"
         echo "-----------------------------------------------------------------"
         echo " Inputs: "
+        echo "    ORT_EXTRA_ARGS     : '${ORT_EXTRA_ARGS}' "
         echo "    ANALYZE_EXTRA_ARGS : '${ANALYZE_EXTRA_ARGS}' "
         echo "-----------------------------------------------------------------"
         echo " Set X_EXTRA_ARGS from ANALYZE_EXTRA_ARGS"
@@ -154,11 +162,12 @@ runs:
           -v ${{ github.workspace }}:/project \
           --user 10001 \
           edulix/ort:${{ inputs.ort-version }} \
+          ${ORT_EXTRA_ARGS} \
           ${VERBOSITY} \
           analyze \
           -i /project \
           -o /project/ort \
-          ${{ inputs.analyze-extra-args }}
+          ${X_EXTRA_ARGS}
         echo "-----------------------------------------------------------------"
         echo " Finished!"
         echo "-----------------------------------------------------------------"
@@ -172,6 +181,7 @@ runs:
       id: evaluate
       shell: bash
       env:
+        ORT_EXTRA_ARGS: ${{ inputs.ort-extra-args }}
         VERBOSITY: ${{ steps.init.outputs.verbosity }}
         RUN_EVALUATE: ${{ inputs.evaluate }}
         PACKAGE_CURATIONS_DIR: ${{ inputs.package-curations-dir }}
@@ -185,6 +195,7 @@ runs:
         echo " ORT evaluate step"
         echo "-----------------------------------------------------------------"
         echo " Inputs: "
+        echo "    ORT_EXTRA_ARGS               : '${ORT_EXTRA_ARGS}' "
         echo "    PACKAGE_CURATIONS_DIR        : '${PACKAGE_CURATIONS_DIR}' "
         echo "    RULES_FILE                   : '${RULES_FILE}' "
         echo "    LICENSE_CLASSIFICATIONS_FILE : '${LICENSE_CLASSIFICATIONS_FILE}' "
@@ -222,6 +233,7 @@ runs:
           -v ${{ github.workspace }}:/project \
           --user 10001 \
           edulix/ort:${{ inputs.ort-version }} \
+          ${ORT_EXTRA_ARGS} \
           ${VERBOSITY} \
           evaluate \
           -i /project/ort/analyzer-result.yml \
@@ -243,6 +255,7 @@ runs:
       id: report
       shell: bash
       env:
+        ORT_EXTRA_ARGS: ${{ inputs.ort-extra-args }}
         VERBOSITY: ${{ steps.init.outputs.verbosity }}
         RUN_REPORT: ${{ inputs.report }}
         REPORTERS: ${{ inputs.reporters }}
@@ -254,6 +267,7 @@ runs:
         echo " ORT report step"
         echo "-----------------------------------------------------------------"
         echo " Inputs: "
+        echo "    ORT_EXTRA_ARGS    : '${ORT_EXTRA_ARGS}' "
         echo "    REPORTERS         : '${REPORTERS}' "
         echo "    REPORT_EXTRA_ARGS : '${REPORT_EXTRA_ARGS}' "
         echo "-----------------------------------------------------------------"
@@ -279,6 +293,7 @@ runs:
           -v ${{ github.workspace }}:/project \
           --user 10001 \
           edulix/ort:${{ inputs.ort-version }} \
+          ${ORT_EXTRA_ARGS} \
           ${VERBOSITY} \
           report \
           -i /project/ort/evaluation-result.yml \
