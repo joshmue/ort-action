@@ -15,7 +15,7 @@ outputs:
     value: ${{ steps.evaluate.outputs.evaluation-result }}
   results-dir:
     description: "output directory for the report step"
-    value: ${{ steps.results-dir.outputs.results-dir }}
+    value: ${{ steps.init.outputs.results-dir }}
 
 inputs:
   ort-version:
@@ -40,6 +40,12 @@ inputs:
       ORT Action. Default: `true`.
     required: false
     default: true
+  verbosity:
+    description: >
+      Verbosity level in ORT to use. Possible values: [
+        `warn`, `info`, `performance`, `debug`]. Default to `warn`.
+    required: false
+    default: 'warn'
   package-curations-dir:
     description: >-
       Specifies path relative to the project directory for the curations
@@ -71,23 +77,23 @@ inputs:
   report-extra-args:
     description: List of extra arguments for the `report` action.
     required: false
-  fail-on:
-    description: >
-      Fail the execution of the pipeline on unresolved errors, warnings or
-      hints. Uses the StaticHtml reporter to find if there's any unresolved
-      issue. Defaults to 'dont-fail'. Possible values: 'errors', 'warnings',
-      'hints', 'dont-fail'. Note: requires the StaticHtml reporter and the report step to be
-      executed.
-    required: false
-    default: 'dont-fail'
 
 runs:
   using: "composite"
   steps:
-    - name: Create some needed directories
-      id: results-dir
+    - name: Initialization
+      id: init
       shell: bash
+      env:
+        VERBOSITY: ${{ inputs.verbosity }}
       run: |
+        echo "-----------------------------------------------------------------"
+        echo " Initialization step"
+        echo "-----------------------------------------------------------------"
+        echo " Inputs: "
+        echo "    VERBOSITY : '${VERBOSITY}' "
+        echo "-----------------------------------------------------------------"
+
         [ -d ${{ github.workspace }}/ort/ ] || mkdir ${{ github.workspace }}/ort/
         [ -d ${{ github.workspace }}/.ort/ ] || mkdir ${{ github.workspace }}/.ort/
         [ -d ${{ github.workspace }}/.config/ ] || mkdir ${{ github.workspace }}/.config/
@@ -100,11 +106,26 @@ runs:
         ls -lah ${{ github.workspace }}/ort/
         echo "-----------------------------------------------------------------"
         echo "::set-output name=results-dir::ort/"
+        echo "-----------------------------------------------------------------"
+        echo " Parsing VERBOSITY"
+        echo "-----------------------------------------------------------------"
+        if [ ${VERBOSITY} = "warn" ]; then
+          echo "::set-output name=verbosity::"
+          echo " Setting verbosity as warning level"
+        elif [[ ${VERBOSITY} == +(info|performance|debug) ]]; then
+          echo "::set-output name=verbosity::--${VERBOSITY}"
+          echo " Setting verbosity as ${VERBOSITY} level"
+        else
+          echo "Error: verbosity='${VERBOSITY}' should be one of: warn, debug, info, performance"
+          exit 1
+        fi
+        echo "-----------------------------------------------------------------"
 
     - name: ORT analyze 
       id: analyze
       shell: bash
       env:
+        VERBOSITY: ${{ steps.init.outputs.verbosity }}
         RUN_ANALYZE: ${{ inputs.analyze }}
         ANALYZE_EXTRA_ARGS: ${{ inputs.analyze-extra-args }}
       run: |
@@ -133,7 +154,8 @@ runs:
           -v ${{ github.workspace }}:/project \
           --user 10001 \
           edulix/ort:${{ inputs.ort-version }} \
-          --info analyze \
+          ${VERBOSITY} \
+          analyze \
           -i /project \
           -o /project/ort \
           ${X_EXTRA_ARGS}
@@ -150,6 +172,7 @@ runs:
       id: evaluate
       shell: bash
       env:
+        VERBOSITY: ${{ steps.init.outputs.verbosity }}
         RUN_EVALUATE: ${{ inputs.evaluate }}
         PACKAGE_CURATIONS_DIR: ${{ inputs.package-curations-dir }}
         RULES_FILE: ${{ inputs.rules-file }}
@@ -199,7 +222,8 @@ runs:
           -v ${{ github.workspace }}:/project \
           --user 10001 \
           edulix/ort:${{ inputs.ort-version }} \
-          --info evaluate \
+          ${VERBOSITY} \
+          evaluate \
           -i /project/ort/analyzer-result.yml \
           -o /project/ort \
           ${X_CURATIONS_DIR} \
@@ -219,6 +243,7 @@ runs:
       id: report
       shell: bash
       env:
+        VERBOSITY: ${{ steps.init.outputs.verbosity }}
         RUN_REPORT: ${{ inputs.report }}
         REPORTERS: ${{ inputs.reporters }}
         REPORT_EXTRA_ARGS: ${{ inputs.report-extra-args }}
@@ -254,7 +279,8 @@ runs:
           -v ${{ github.workspace }}:/project \
           --user 10001 \
           edulix/ort:${{ inputs.ort-version }} \
-          --info report \
+          ${VERBOSITY} \
+          report \
           -i /project/ort/evaluation-result.yml \
           -o /project/ort \
           -f ${X_REPORTERS} \
@@ -266,65 +292,3 @@ runs:
         echo "-----------------------------------------------------------------"
         ls -lah ${{ github.workspace }}/ort/
         echo "-----------------------------------------------------------------"
-
-    - name: Fail checks
-      id: fail-checks
-      shell: bash
-      env:
-        FAIL_ON: ${{ inputs.fail-on }}
-      run: |
-        [ "${FAIL_ON}" = "dont-fail" ] && \
-          { echo "do not need to fail on unresolved issues so don't perform this step"; exit 0; };
-        
-        
-        echo "-----------------------------------------------------------------"
-        echo " ORT fail checks step"
-        echo "-----------------------------------------------------------------"
-        echo " Inputs: "
-        echo "    FAIL_ON : '${FAIL_ON}' "
-        echo "-----------------------------------------------------------------"
-        
-        [ "${FAIL_ON}" = "errors" ] && { \
-        echo " Checking unresolved errors"; \
-        echo "-----------------------------------------------------------------"; \
-        grep "Rule Violation Summary (0 errors" ${{ github.workspace }}/ort/scan-report.html >/dev/null; \
-        export FAILED_EXEC=$?; \
-        if [ $FAILED_EXEC -eq 0 ]; \
-        then \
-          echo "0 unresolved errors"; \
-        else \
-          echo "FAIL: report has unresolved errors"; \
-          exit 1; \
-        fi; \
-        } || echo "Do not fail on report unresolved errors";
-        echo "-----------------------------------------------------------------";
-
-        [ "${FAIL_ON}" = "warnings" ] && { \
-        echo " Checking unresolved errors/warnings"; \
-        echo "-----------------------------------------------------------------"; \
-        grep "Rule Violation Summary (0 errors, 0 warnings" ${{ github.workspace }}/ort/scan-report.html >/dev/null; \
-        export FAILED_EXEC=$?; \
-        if [ $FAILED_EXEC -eq 0 ]; \
-        then \
-          echo "0 unresolved errors/warnings"; \
-        else \
-          echo "FAIL: report has unresolved errors/warnings"; \
-          exit 1; \
-        fi; \
-        } || echo "Do not fail on report unresolved errors/warnings"; 
-        echo "-----------------------------------------------------------------";
-        
-        [ "${FAIL_ON}" = "hints" ] && { \
-        echo " Checking unresolved errors/warnings/hints"; \
-        echo "-----------------------------------------------------------------"; \
-        grep "Rule Violation Summary (0 errors, 0 warnings, 0 hints to resolve)" ${{ github.workspace }}/ort/scan-report.html >/dev/null; \
-        if [ $? -eq 0 ]; \
-        then \
-          echo "0 unresolved errors/warnings/hints"; \
-        else \
-          echo "FAIL: report has unresolved errors/warnings/hints"; \
-          exit 1; \
-        fi; \
-        } || echo "Do not fail on report unresolved errors/warnings/hints"; 
-        echo "-----------------------------------------------------------------";
-

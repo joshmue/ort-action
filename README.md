@@ -34,14 +34,14 @@ generate dependencies licensing reports in different formats.
 | analyze | Set to `false` to disable the execution of the ORT `analyze` ORT Action. | `false` | `true` |
 | evaluate | Set to `false` to disable the execution of the ORT `evaluate` ORT Action. | `false` | `true` |
 | report | Set to `false` to disable the execution of the ORT `report` ORT Action. | `false` | `true` |
-| package-curations-dir | Specifies path relative to the project directory for the curations directory. Used in `analyze` and `evaluate` actions. It's the `--package-curations-dir` option for ORT. | `false` | |
-| rules-file | Specifies path relative to the project directory for the rules of the `evaluate` action. It's the `--rules-file` option for ORT. | `false` | |
-| license-classifications-file | Specifies path relative to the project directory for the license classifications file of the `evaluate` action. It's the `--license-classifications-file` option for ORT. | `false` | |
+| verbosity | Verbosity level in ORT to use. Possible values: [`warn`, `info`, `performance`, `debug`]. | `false` | `warn` |
+| package-curations-dir | Specifies path relative to the project directory for the curations directory. Used in `analyze` and `evaluate` actions. It's the `--package-curations-dir` option for ORT. | `false` | - |
+| rules-file | Specifies path relative to the project directory for the rules of the `evaluate` action. It's the `--rules-file` option for ORT. | `false` | - |
+| license-classifications-file | Specifies path relative to the project directory for the license classifications file of the `evaluate` action. It's the `--license-classifications-file` option for ORT. | `false` | - |
 | reporters | List of reporters to run. | `false` | `Excel,StaticHtml,WebApp` |
-| analyze-extra-args | List of extra arguments for the `analyze` action. | `false` | |
-| evaluate-extra-args | List of extra arguments for the `evaluate` action. | `false` | |
-| report-extra-args | List of extra arguments for the `report` action. | `false` | |
-| fail-on | Fail the execution of the pipeline on unresolved errors, warnings or hints. Uses the StaticHtml reporter to find if there's any unresolved issue. Defaults to `dont-fail`. Possible values: `errors`, `warnings`, `hints`, `dont-fail`. Note: requires the StaticHtml reporter and the report step to be executed. | `false` | `dont-fail` |
+| analyze-extra-args | List of extra arguments for the `analyze` action. | `false` | - |
+| evaluate-extra-args | List of extra arguments for the `evaluate` action. | `false` | - |
+| report-extra-args | List of extra arguments for the `report` action. | `false` | - |
 
 <!-- action-docs-inputs -->
 
@@ -79,5 +79,33 @@ This action is an `composite` action.
   - uses: actions/upload-artifact@v2
     with:
       name: licenses
-      path: ${{ steps.ort-action.outputs.report-result-dir }}
+      path: ${{ steps.ort-action.outputs.results-dir }}
+```
+
+And a more complex example:
+
+```yml
+  - uses: actions/checkout@v2
+  - uses: actions/setup-java@v1
+    with:
+      java-version: '11.0.1'
+
+  - name: Analyze licensing
+    id: ort-action
+    uses: edulix/ort-action@develop
+    with:
+      package-curations-dir: .ort-data/curations-dir/
+      rules-file: .ort-data/rules.kts
+      license-classifications-file: .ort-data/license-classifications.yml
+      reporters: AdocTemplate,PdfTemplate,Excel,StaticHtml,WebApp
+      report-extra-args: >
+        --report-option
+        ADocTemplate=template.path=/project/.ort-data/disclosure_document.ftl
+      evaluate-extra-args: >
+        -P ort.severeRuleViolationThreshold=HINT
+
+  - uses: actions/upload-artifact@v2
+    with:
+      name: licenses
+      path: ${{ steps.ort-action.outputs.results-dir }}
 ```
