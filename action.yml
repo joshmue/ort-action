@@ -167,6 +167,7 @@ runs:
         cat << EOF
         docker run \\
           -e ORT_DATA_DIR=/project/.ort/ \\
+          -e SBT_OPTS="-Dsbt.global.base=.sbt -Dsbt.boot.directory=.sbt -Dsbt.ivy.home=.ivy2" \\
           -v ${{ github.workspace }}:$HOME \\
           -v ${{ github.workspace }}/.ivy2:/.ivy2 \\
           -v ${{ github.workspace }}/.sbt:/.sbt \\
@@ -185,6 +186,7 @@ runs:
         EOF
         docker run \
           -e ORT_DATA_DIR=/project/.ort/ \
+          -e SBT_OPTS="-Dsbt.global.base=.sbt -Dsbt.boot.directory=.sbt -Dsbt.ivy.home=.ivy2" \
           -v ${{ github.workspace }}:$HOME \
           -v ${{ github.workspace }}/.ivy2:/.ivy2 \
           -v ${{ github.workspace }}/.sbt:/.sbt \
