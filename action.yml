@@ -105,8 +105,6 @@ runs:
         [ -d ${{ github.workspace }}/.config/ ] || mkdir ${{ github.workspace }}/.config/
         [ -d ${{ github.workspace }}/.cache/ ] || mkdir ${{ github.workspace }}/.cache/
         [ -d ${{ github.workspace }}/.local/ ] || mkdir ${{ github.workspace }}/.local/
-        [ -d ${{ github.workspace }}/.ivy2/ ] || mkdir -p ${{ github.workspace }}/.ivy2/cache/
-        [ -d ${{ github.workspace }}/.sbt/ ] || mkdir ${{ github.workspace }}/.sbt/
         chmod -R aug+w ${{ github.workspace }}/
         echo "-----------------------------------------------------------------"
         echo " Output directory ${{ github.workspace }}/ort/ contents:"
@@ -127,13 +125,6 @@ runs:
           echo "Error: verbosity='${VERBOSITY}' should be one of: warn, debug, info, performance"
           exit 1
         fi
-        echo "-----------------------------------------------------------------"
-        echo " Initialize ivysettings.xml"
-        echo "-----------------------------------------------------------------"
-        if [ ! -f ${{ github.workspace }}/.ivy2/ivysettings.xml ]; then
-          echo '<ivysettings> <properties environment="env" /> <caches defaultCacheDir="/home.ivy2/cache" /> </ivysettings>' > ${{ github.workspace }}/.ivy2/ivysettings.xml
-        fi
-        echo "Done"
         echo "-----------------------------------------------------------------"
 
     - name: ORT analyze 
@@ -168,9 +159,6 @@ runs:
         docker run \\
           -e ORT_DATA_DIR=/project/.ort/ \\
           -e SBT_OPTS="-Dsbt.global.base=.sbt -Dsbt.boot.directory=.sbt -Dsbt.ivy.home=.ivy2" \\
-          -v ${{ github.workspace }}:$HOME \\
-          -v ${{ github.workspace }}/.ivy2:/.ivy2 \\
-          -v ${{ github.workspace }}/.sbt:/.sbt \\
           -v ${{ github.workspace }}/.config:/.config \\
           -v ${{ github.workspace }}/.cache:/.cache \\
           -v ${{ github.workspace }}/.local:/.local \\
@@ -187,9 +175,6 @@ runs:
         docker run \
           -e ORT_DATA_DIR=/project/.ort/ \
           -e SBT_OPTS="-Dsbt.global.base=.sbt -Dsbt.boot.directory=.sbt -Dsbt.ivy.home=.ivy2" \
-          -v ${{ github.workspace }}:$HOME \
-          -v ${{ github.workspace }}/.ivy2:/.ivy2 \
-          -v ${{ github.workspace }}/.sbt:/.sbt \
           -v ${{ github.workspace }}/.config:/.config \
           -v ${{ github.workspace }}/.cache:/.cache \
           -v ${{ github.workspace }}/.local:/.local \
