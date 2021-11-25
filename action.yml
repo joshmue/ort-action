@@ -128,6 +128,13 @@ runs:
           exit 1
         fi
         echo "-----------------------------------------------------------------"
+        echo " Initialize ivysettings.xml"
+        echo "-----------------------------------------------------------------"
+        if [ ! -f ${{ github.workspace }}/ivysettings.xml ]; then
+          echo '<ivysettings> <properties environment="env" /> <caches defaultCacheDir="/.ivy2/cache" /> </ivysettings>' > ${{ github.workspace }}/ivysettings.xml
+        fi
+        echo "Done"
+        echo "-----------------------------------------------------------------"
 
     - name: ORT analyze 
       id: analyze
@@ -140,6 +147,7 @@ runs:
       run: |
         [ "${RUN_ANALYZE}" = "true" ] || \
           { echo "analyze is not true but '${RUN_ANALYZE}' so don't perform this step"; exit 0; }
+        export USER_ID=$(id -u ${USER})
         echo "-----------------------------------------------------------------"
         echo " ORT analyze step"
         echo "-----------------------------------------------------------------"
@@ -156,6 +164,24 @@ runs:
         echo "-----------------------------------------------------------------"
         echo " Running ORT analyze"
         echo "-----------------------------------------------------------------"
+        cat << EOF
+        docker run \\
+          -e ORT_DATA_DIR=/project/.ort/ \\
+          -v ${{ github.workspace }}/.ivy2:/.ivy2 \\
+          -v ${{ github.workspace }}/.sbt:/.sbt \\
+          -v ${{ github.workspace }}/.config:/.config \\
+          -v ${{ github.workspace }}/.cache:/.cache \\
+          -v ${{ github.workspace }}/.local:/.local \\
+          -v ${{ github.workspace }}:/project \\
+          --user ${USER_ID} \\
+          edulix/ort:\${{ inputs.ort-version }} \\
+          ${ORT_EXTRA_ARGS} \\
+          ${VERBOSITY} \\
+          analyze \\
+          -i /project \\
+          -o /project/ort \\
+          ${X_EXTRA_ARGS}
+        EOF
         docker run \
           -e ORT_DATA_DIR=/project/.ort/ \
           -v ${{ github.workspace }}/.ivy2:/.ivy2 \
@@ -164,7 +190,7 @@ runs:
           -v ${{ github.workspace }}/.cache:/.cache \
           -v ${{ github.workspace }}/.local:/.local \
           -v ${{ github.workspace }}:/project \
-          --user 10001 \
+          --user ${USER_ID} \
           edulix/ort:${{ inputs.ort-version }} \
           ${ORT_EXTRA_ARGS} \
           ${VERBOSITY} \
