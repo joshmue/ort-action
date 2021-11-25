@@ -101,7 +101,7 @@ And a more complex example:
       reporters: AdocTemplate,PdfTemplate,Excel,StaticHtml,WebApp
       report-extra-args: >
         --report-option
-        ADocTemplate=template.path=/project/.ort-data/disclosure_document.ftl
+        PdfTemplate=template.path=/project/.ort-data/disclosure_document.ftl
       ort-extra-args: -P ort.severeRuleViolationThreshold=HINT
 
   - uses: actions/upload-artifact@v2
