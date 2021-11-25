@@ -158,7 +158,7 @@ runs:
         cat << EOF
         docker run \\
           -e ORT_DATA_DIR=/project/.ort/ \\
-          -e SBT_OPTS="-Dsbt.global.base=.sbt -Dsbt.boot.directory=.sbt -Dsbt.ivy.home=.ivy2" \\
+          -e SBT_OPTS="-verbose -debug -Dsbt.global.base=.sbt -Dsbt.boot.directory=.sbt -Dsbt.ivy.home=.ivy2" \\
           -v ${{ github.workspace }}/.config:/.config \\
           -v ${{ github.workspace }}/.cache:/.cache \\
           -v ${{ github.workspace }}/.local:/.local \\
