@@ -132,6 +132,8 @@ runs:
         echo "-----------------------------------------------------------------"
         if [ ! -f ${{ github.workspace }}/ivysettings.xml ]; then
           echo '<ivysettings> <properties environment="env" /> <caches defaultCacheDir="/.ivy2/cache" /> </ivysettings>' > ${{ github.workspace }}/ivysettings.xml
+          echo "ls -lah ${{ github.workspace }}/ should list ivysettings.xml"
+          ls -lah ${{ github.workspace }}
         fi
         echo "Done"
         echo "-----------------------------------------------------------------"
@@ -164,6 +166,11 @@ runs:
         echo "-----------------------------------------------------------------"
         echo " Running ORT analyze"
         echo "-----------------------------------------------------------------"
+        docker run \
+          --entrypoint '' \
+          --user ${USER_ID} \
+          edulix/ort \
+          echo "HOME=$HOME"
         cat << EOF
         docker run \\
           -e ORT_DATA_DIR=/project/.ort/ \\
@@ -174,7 +181,7 @@ runs:
           -v ${{ github.workspace }}/.local:/.local \\
           -v ${{ github.workspace }}:/project \\
           --user ${USER_ID} \\
-          edulix/ort:\${{ inputs.ort-version }} \\
+          edulix/ort:${{ inputs.ort-version }} \\
           ${ORT_EXTRA_ARGS} \\
           ${VERBOSITY} \\
           analyze \\
