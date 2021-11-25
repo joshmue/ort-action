@@ -158,6 +158,7 @@ runs:
         cat << EOF
         docker run \\
           -e ORT_DATA_DIR=/project/.ort/ \\
+          -e JAVA_OPTS="--illegal-access=permit" \\
           -e SBT_OPTS="-verbose -debug -Dsbt.global.base=.sbt -Dsbt.boot.directory=.sbt -Dsbt.ivy.home=.ivy2" \\
           -v ${{ github.workspace }}/.config:/.config \\
           -v ${{ github.workspace }}/.cache:/.cache \\
@@ -174,6 +175,7 @@ runs:
         EOF
         docker run \
           -e ORT_DATA_DIR=/project/.ort/ \
+          -e JAVA_OPTS="--illegal-access=permit" \
           -e SBT_OPTS="-Dsbt.global.base=.sbt -Dsbt.boot.directory=.sbt -Dsbt.ivy.home=.ivy2" \
           -v ${{ github.workspace }}/.config:/.config \
           -v ${{ github.workspace }}/.cache:/.cache \
