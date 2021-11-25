@@ -105,7 +105,7 @@ runs:
         [ -d ${{ github.workspace }}/.config/ ] || mkdir ${{ github.workspace }}/.config/
         [ -d ${{ github.workspace }}/.cache/ ] || mkdir ${{ github.workspace }}/.cache/
         [ -d ${{ github.workspace }}/.local/ ] || mkdir ${{ github.workspace }}/.local/
-        [ -d ${{ github.workspace }}/.ivy2/ ] || mkdir -p ${{ github.workspace }}/.ivy2/cache/
+        [ -d $HOME/.ivy2/ ] || mkdir -p $HOME/.ivy2/cache/
         [ -d ${{ github.workspace }}/.sbt/ ] || mkdir ${{ github.workspace }}/.sbt/
         chmod -R aug+w ${{ github.workspace }}/
         echo "-----------------------------------------------------------------"
@@ -130,10 +130,8 @@ runs:
         echo "-----------------------------------------------------------------"
         echo " Initialize ivysettings.xml"
         echo "-----------------------------------------------------------------"
-        if [ ! -f ${{ github.workspace }}/ivysettings.xml ]; then
-          echo '<ivysettings> <properties environment="env" /> <caches defaultCacheDir="/.ivy2/cache" /> </ivysettings>' > ${{ github.workspace }}/ivysettings.xml
-          echo "ls -lah ${{ github.workspace }}/ should list ivysettings.xml"
-          ls -lah ${{ github.workspace }}
+        if [ ! -f $HOME/.ivy2/ivysettings.xml ]; then
+          echo '<ivysettings> <properties environment="env" /> <caches defaultCacheDir="/home.ivy2/cache" /> </ivysettings>' > $HOME/.ivy2/ivysettings.xml
         fi
         echo "Done"
         echo "-----------------------------------------------------------------"
@@ -166,14 +164,10 @@ runs:
         echo "-----------------------------------------------------------------"
         echo " Running ORT analyze"
         echo "-----------------------------------------------------------------"
-        docker run \
-          --entrypoint '' \
-          --user ${USER_ID} \
-          edulix/ort \
-          echo "HOME=$HOME"
         cat << EOF
         docker run \\
           -e ORT_DATA_DIR=/project/.ort/ \\
+          -v $HOME:$HOME \\
           -v ${{ github.workspace }}/.ivy2:/.ivy2 \\
           -v ${{ github.workspace }}/.sbt:/.sbt \\
           -v ${{ github.workspace }}/.config:/.config \\
@@ -191,6 +185,7 @@ runs:
         EOF
         docker run \
           -e ORT_DATA_DIR=/project/.ort/ \
+          -v $HOME:$HOME \
           -v ${{ github.workspace }}/.ivy2:/.ivy2 \
           -v ${{ github.workspace }}/.sbt:/.sbt \
           -v ${{ github.workspace }}/.config:/.config \
