@@ -1,1 +1,1 @@
-Eduardo Robles Elvira <edulix@nvotes.com>
+Eduard Itrich <eduard@itrich.net>

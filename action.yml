@@ -1,7 +1,7 @@
 name: 'Run ORT'
 description: >
   Run oss-review-toolkit to review Open Source software dependencies.
-author: "edulix"
+author: "Sovereign Cloud Stack"
 branding:
   icon: "activity"
   color: "green"
@@ -19,9 +19,9 @@ outputs:
 
 inputs:
   ort-version:
-    description: "edulix/ort docker hub tag to use."
+    description: "sovereigncloudstack/ort docker hub tag to use."
     required: false
-    default: 'latest'
+    default: 'main'
   analyze:
     description: >
       Set to `false` to disable the execution of the ORT `analyze`
@@ -102,9 +102,11 @@ runs:
 
         [ -d ${{ github.workspace }}/ort/ ] || mkdir ${{ github.workspace }}/ort/
         [ -d ${{ github.workspace }}/.ort/ ] || mkdir ${{ github.workspace }}/.ort/
+        [ -d ${{ github.workspace }}/.ort/cache ] || mkdir ${{ github.workspace }}/.ort/cache
         [ -d ${{ github.workspace }}/.config/ ] || mkdir ${{ github.workspace }}/.config/
         [ -d ${{ github.workspace }}/.cache/ ] || mkdir ${{ github.workspace }}/.cache/
         [ -d ${{ github.workspace }}/.local/ ] || mkdir ${{ github.workspace }}/.local/
+        [ -d ${{ github.workspace }}/.bundle/ ] || mkdir ${{ github.workspace }}/.bundle/
         chmod -R aug+w ${{ github.workspace }}/
         echo "-----------------------------------------------------------------"
         echo " Output directory ${{ github.workspace }}/ort/ contents:"
@@ -127,7 +129,7 @@ runs:
         fi
         echo "-----------------------------------------------------------------"
 
-    - name: ORT analyze 
+    - name: ORT analyze
       id: analyze
       shell: bash
       env:
@@ -163,9 +165,10 @@ runs:
           -v ${{ github.workspace }}/.config:/.config \\
           -v ${{ github.workspace }}/.cache:/.cache \\
           -v ${{ github.workspace }}/.local:/.local \\
+          -v ${{ github.workspace }}/.bundle:/.bundle \\
           -v ${{ github.workspace }}:/project \\
           --user ${USER_ID} \\
-          edulix/ort:${{ inputs.ort-version }} \\
+          ghcr.io/sovereigncloudstack/ort:${{ inputs.ort-version }} \\
           ${ORT_EXTRA_ARGS} \\
           ${VERBOSITY} \\
           analyze \\
@@ -180,9 +183,10 @@ runs:
           -v ${{ github.workspace }}/.config:/.config \
           -v ${{ github.workspace }}/.cache:/.cache \
           -v ${{ github.workspace }}/.local:/.local \
+          -v ${{ github.workspace }}/.bundle:/.bundle \
           -v ${{ github.workspace }}:/project \
           --user ${USER_ID} \
-          edulix/ort:${{ inputs.ort-version }} \
+          ghcr.io/sovereigncloudstack/ort:${{ inputs.ort-version }} \
           ${ORT_EXTRA_ARGS} \
           ${VERBOSITY} \
           analyze \
@@ -253,7 +257,7 @@ runs:
           -e ORT_DATA_DIR=/project/.ort/ \
           -v ${{ github.workspace }}:/project \
           --user 10001 \
-          edulix/ort:${{ inputs.ort-version }} \
+          ghcr.io/sovereigncloudstack/ort:${{ inputs.ort-version }} \
           ${ORT_EXTRA_ARGS} \
           ${VERBOSITY} \
           evaluate \
@@ -272,7 +276,7 @@ runs:
         echo "-----------------------------------------------------------------"
         echo "::set-output name=evaluation-result::ort/evaluation-result.yml"
 
-    - name: ORT report 
+    - name: ORT report
       id: report
       shell: bash
       env:
@@ -308,12 +312,12 @@ runs:
         echo "-----------------------------------------------------------------"
         echo " Running ORT report"
         echo "-----------------------------------------------------------------"
-        echo "command: 'docker run -e ORT_DATA_DIR=/project/.ort/ -v ${{ github.workspace }}:/project --user 10001  edulix/ort:${{ inputs.ort-version }} --info report  -i /project/ort/evaluation-result.yml  -o /project/ort -f ${X_REPORTERS} ${X_EXTRA_ARGS}'"
+        echo "command: 'docker run -e ORT_DATA_DIR=/project/.ort/ -v ${{ github.workspace }}:/project --user 10001  ghcr.io/sovereigncloudstack/ort:${{ inputs.ort-version }} --info report  -i /project/ort/evaluation-result.yml  -o /project/ort -f ${X_REPORTERS} ${X_EXTRA_ARGS}'"
         docker run \
           -e ORT_DATA_DIR=/project/.ort/ \
           -v ${{ github.workspace }}:/project \
           --user 10001 \
-          edulix/ort:${{ inputs.ort-version }} \
+          ghcr.io/sovereigncloudstack/ort:${{ inputs.ort-version }} \
           ${ORT_EXTRA_ARGS} \
           ${VERBOSITY} \
           report \
