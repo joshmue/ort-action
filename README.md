@@ -79,7 +79,7 @@ This action is an `composite` action.
 
   - name: Analyze licensing
     id: ort-action
-    uses: itrich/ort-action
+    uses: sovereigncloudstack/ort-action
 
   - uses: actions/upload-artifact@v2
     with:
@@ -97,7 +97,7 @@ And a more complex example:
 
   - name: Analyze licensing
     id: ort-action
-    uses: itrich/ort-action@main
+    uses: sovereigncloudstack/ort-action@main
     with:
       package-curations-dir: .ort-data/curations-dir/
       rules-file: .ort-data/rules.kts
