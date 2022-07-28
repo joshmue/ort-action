@@ -1,33 +1,20 @@
-<div align="center">
-
 # Execute ORT with a Github Action
-
-[![Marketplace](https://img.shields.io/badge/GitHub-Marketplace-green.svg)](https://github.com/marketplace/actions/run-ort) [![Release](https://img.shields.io/github/release/itrich/ort-action.svg)](https://github.com/itrich/ort-action/releases)
 
 This action allows you to run [ORT](https://oss-review-toolkit.org/). The OSS
 Review Toolkit (ORT) aims to assist with the tasks that commonly need to be
 performed in the context of license compliance checks, especially for (but not
 limited to) Free and Open Source Software dependencies.
 
-> THIS IS AN EXPERIMENTAL ACTION
-
-</div>
-
 ## Environment
 This action requires a java environment. (See example)
 
 <!-- action-docs-description -->
 ## Description
-
 Run oss-review-toolkit to review Open Source software dependencies.
-
-
-
 <!-- action-docs-description -->
 
 <!-- action-docs-inputs -->
 ## Inputs
-
 | parameter | description | required | default |
 | - | - | - | - |
 | ort-version | sovereigncloudstack/ort docker hub tag to use. | `false` | main |
@@ -43,32 +30,21 @@ Run oss-review-toolkit to review Open Source software dependencies.
 | analyze-extra-args | List of extra arguments for the `analyze` action. | `false` |  |
 | evaluate-extra-args | List of extra arguments for the `evaluate` action. | `false` |  |
 | report-extra-args | List of extra arguments for the `report` action. | `false` |  |
-
-
-
 <!-- action-docs-inputs -->
 
 <!-- action-docs-outputs -->
 ## Outputs
-
 | parameter | description |
 | - | - |
 | analyzer-result | output file for the analyze step |
 | evaluation-result | output file for the evaluate step |
 | results-dir | output directory for the report step |
-
-
-
 <!-- action-docs-outputs -->
 
 <!-- action-docs-runs -->
 ## Runs
-
 This action is an `composite` action.
-
-
 <!-- action-docs-runs -->
-
 ## GitHub workflow
 
 ```yml
