@@ -107,6 +107,7 @@ runs:
         [ -d ${{ github.workspace }}/.cache/ ] || mkdir ${{ github.workspace }}/.cache/
         [ -d ${{ github.workspace }}/.local/ ] || mkdir ${{ github.workspace }}/.local/
         [ -d ${{ github.workspace }}/.bundle/ ] || mkdir ${{ github.workspace }}/.bundle/
+        [ -d ${{ github.workspace }}/.npm/ ] || mkdir ${{ github.workspace }}/.npm/
         chmod -R aug+w ${{ github.workspace }}/
         echo "-----------------------------------------------------------------"
         echo " Output directory ${{ github.workspace }}/ort/ contents:"
@@ -166,6 +167,7 @@ runs:
           -v ${{ github.workspace }}/.cache:/.cache \\
           -v ${{ github.workspace }}/.local:/.local \\
           -v ${{ github.workspace }}/.bundle:/.bundle \\
+          -v ${{ github.workspace }}/.npm:/.npm \\
           -v ${{ github.workspace }}:/project \\
           --user ${USER_ID} \\
           ghcr.io/sovereigncloudstack/ort:${{ inputs.ort-version }} \\
