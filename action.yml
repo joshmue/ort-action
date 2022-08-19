@@ -27,19 +27,19 @@ inputs:
       Set to `false` to disable the execution of the ORT `analyze`
       ORT Action. Default: `true`.
     required: false
-    default: true
+    default: 'true'
   evaluate:
     description: >
       Set to `false` to disable the execution of the ORT `evaluate`
       ORT Action. Default: `true`.
     required: false
-    default: true
+    default: 'true'
   report:
     description: >
       Set to `false` to disable the execution of the ORT `report`
       ORT Action. Default: `true`.
     required: false
-    default: true
+    default: 'true'
   verbosity:
     description: >
       Verbosity level in ORT to use. Possible values: [
