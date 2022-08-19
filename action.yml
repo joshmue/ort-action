@@ -176,7 +176,7 @@ runs:
           -e JAVA_OPTS="--illegal-access=permit" \
           -e SBT_OPTS="-Dsbt.global.base=.sbt -Dsbt.boot.directory=.sbt -Dsbt.ivy.home=.ivy2" \
           -v ${{ github.workspace }}:/project \
-          -w /project
+          -w /project \
           ghcr.io/sovereigncloudstack/ort:${{ inputs.ort-version }} \
           ${ORT_EXTRA_ARGS} \
           ${VERBOSITY} \
