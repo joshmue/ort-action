@@ -157,12 +157,14 @@ runs:
         echo "-----------------------------------------------------------------"
         echo " Running ORT analyze"
         echo "-----------------------------------------------------------------"
+        sudo chown -R $(id -u) ${{ github.workspace }}
         cat << EOF
         docker run \\
           -e ORT_DATA_DIR=/project/.ort/ \\
           -e JAVA_OPTS="--illegal-access=permit" \\
           -e SBT_OPTS="-verbose -debug -Dsbt.global.base=.sbt -Dsbt.boot.directory=.sbt -Dsbt.ivy.home=.ivy2" \\
           -v ${{ github.workspace }}:/project \\
+          --user $(id -u) \\
           ghcr.io/sovereigncloudstack/ort:${{ inputs.ort-version }} \\
           ${ORT_EXTRA_ARGS} \\
           ${VERBOSITY} \\
@@ -177,6 +179,7 @@ runs:
           -e SBT_OPTS="-Dsbt.global.base=.sbt -Dsbt.boot.directory=.sbt -Dsbt.ivy.home=.ivy2" \
           -v ${{ github.workspace }}:/project \
           -w /project \
+          --user $(id -u) \
           ghcr.io/sovereigncloudstack/ort:${{ inputs.ort-version }} \
           ${ORT_EXTRA_ARGS} \
           ${VERBOSITY} \
