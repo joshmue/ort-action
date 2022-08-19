@@ -141,7 +141,6 @@ runs:
       run: |
         [ "${RUN_ANALYZE}" = "true" ] || \
           { echo "analyze is not true but '${RUN_ANALYZE}' so don't perform this step"; exit 0; }
-        export USER_ID=$(id -u ${USER})
         echo "-----------------------------------------------------------------"
         echo " ORT analyze step"
         echo "-----------------------------------------------------------------"
@@ -163,13 +162,7 @@ runs:
           -e ORT_DATA_DIR=/project/.ort/ \\
           -e JAVA_OPTS="--illegal-access=permit" \\
           -e SBT_OPTS="-verbose -debug -Dsbt.global.base=.sbt -Dsbt.boot.directory=.sbt -Dsbt.ivy.home=.ivy2" \\
-          -v ${{ github.workspace }}/.config:/.config \\
-          -v ${{ github.workspace }}/.cache:/.cache \\
-          -v ${{ github.workspace }}/.local:/.local \\
-          -v ${{ github.workspace }}/.bundle:/.bundle \\
-          -v ${{ github.workspace }}/.npm:/.npm \\
           -v ${{ github.workspace }}:/project \\
-          --user ${USER_ID} \\
           ghcr.io/sovereigncloudstack/ort:${{ inputs.ort-version }} \\
           ${ORT_EXTRA_ARGS} \\
           ${VERBOSITY} \\
@@ -182,12 +175,8 @@ runs:
           -e ORT_DATA_DIR=/project/.ort/ \
           -e JAVA_OPTS="--illegal-access=permit" \
           -e SBT_OPTS="-Dsbt.global.base=.sbt -Dsbt.boot.directory=.sbt -Dsbt.ivy.home=.ivy2" \
-          -v ${{ github.workspace }}/.config:/.config \
-          -v ${{ github.workspace }}/.cache:/.cache \
-          -v ${{ github.workspace }}/.local:/.local \
-          -v ${{ github.workspace }}/.bundle:/.bundle \
           -v ${{ github.workspace }}:/project \
-          --user ${USER_ID} \
+          -w /project
           ghcr.io/sovereigncloudstack/ort:${{ inputs.ort-version }} \
           ${ORT_EXTRA_ARGS} \
           ${VERBOSITY} \
